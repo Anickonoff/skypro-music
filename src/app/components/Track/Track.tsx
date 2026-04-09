@@ -2,7 +2,11 @@ import { TrackType } from '@/sharedTypes/sharedTypes';
 import { formatTime } from '@/utils/helper';
 import styles from './track.module.css';
 
-export function Track({ track }: { track: TrackType }) {
+type TrackProps = {
+  track: TrackType;
+};
+
+export function Track({ track }: TrackProps) {
   return (
     <div key={track._id} className={styles.playlist__item}>
       <div className={styles.playlist__track}>
