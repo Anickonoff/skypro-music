@@ -1,14 +1,27 @@
+'use client';
+
 import { TrackType } from '@/sharedTypes/sharedTypes';
 import { formatTime } from '@/utils/helper';
 import styles from './track.module.css';
+import { useAppDispatch } from '@/store/store';
+import { setCurrentTrack } from '@/store/features/trackSlice';
 
 type TrackProps = {
   track: TrackType;
 };
 
 export function Track({ track }: TrackProps) {
+  const dispatch = useAppDispatch();
+  const onClickTrack = () => {
+    dispatch(setCurrentTrack(track));
+  };
+
   return (
-    <div key={track._id} className={styles.playlist__item}>
+    <div
+      key={track._id}
+      className={styles.playlist__item}
+      onClick={onClickTrack}
+    >
       <div className={styles.playlist__track}>
         <div className={styles.track__title}>
           <div className={styles.track__titleImage}>
