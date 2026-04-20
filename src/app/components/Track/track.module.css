@@ -58,6 +58,22 @@
   stroke: #4e4e4e;
 }
 
+@keyframes grow {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.8);
+  }
+}
+
+.track__titleSvgActive {
+  animation: grow 2s infinite;
+}
+
 .track__titleLink {
   font-style: normal;
   font-weight: 400;
