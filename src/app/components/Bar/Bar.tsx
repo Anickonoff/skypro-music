@@ -20,6 +20,7 @@ export default function Bar() {
   const dispatch = useAppDispatch();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isLooping, setIsLooping] = useState<boolean>(false);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isLoadedTrack, setIsLoadedTrack] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(0.5);
   const [currentTime, setCurrentTime] = useState<number>(0);
@@ -73,6 +74,10 @@ export default function Bar() {
     }
   };
 
+  const onStartLoading = () => {
+    setIsLoadedTrack(false);
+  };
+
   const onLoadedMetadata = () => {
     if (audioRef.current) {
       setIsLoadedTrack(true);
@@ -81,10 +86,23 @@ export default function Bar() {
     }
   };
 
+  const onEndedTrack = () => {
+    if (!isLooping) {
+      dispatch(setNextTrack());
+    }
+  };
+
   const onChangeVolume = (e: ChangeEvent<HTMLInputElement>) => {
     setVolume(Number(e.target.value));
     if (audioRef.current) {
       audioRef.current.volume = Number(e.target.value);
+    }
+  };
+
+  const onMutedVolume = () => {
+    setIsMuted(!isMuted);
+    if (audioRef.current) {
+      audioRef.current.muted = !audioRef.current.muted;
     }
   };
 
@@ -103,7 +121,9 @@ export default function Bar() {
         loop={isLooping}
         onTimeUpdate={onTimeUpdate}
         onLoadedMetadata={onLoadedMetadata}
-        onEnded={() => console.log('End')}
+        onEnded={onEndedTrack}
+        onLoadStart={onStartLoading}
+        muted={isMuted}
       ></audio>
       <div className={styles.bar__content}>
         <ProgressBar
@@ -130,6 +150,13 @@ export default function Bar() {
                     xlinkHref={`/img/icon/sprite.svg#${isPlaying ? 'icon-pause' : 'icon-play'}`}
                   ></use>
                 </svg>
+                {!isLoadedTrack ? (
+                  <div className={styles.player__loadingOverlay}>
+                    <svg className={styles.player__btnLoading}>
+                      <use xlinkHref="/img/icon/sprite.svg#icon-loading"></use>
+                    </svg>
+                  </div>
+                ) : null}
               </div>
               <div className={styles.player__btnNext} onClick={onNextTrack}>
                 <svg className={styles.player__btnNextSvg}>
@@ -210,9 +237,11 @@ export default function Bar() {
           </div>
           <div className={styles.bar__volumeBlock}>
             <div className={styles.volume__content}>
-              <div className={styles.volume__image}>
+              <div className={styles.volume__image} onClick={onMutedVolume}>
                 <svg className={styles.volume__svg}>
-                  <use xlinkHref="/img/icon/sprite.svg#icon-volume"></use>
+                  <use
+                    xlinkHref={`/img/icon/sprite.svg#${isMuted ? 'icon-muted' : 'icon-volume'}`}
+                  ></use>
                 </svg>
               </div>
               <div className={classNames(styles.volume__progress, styles.btn)}>

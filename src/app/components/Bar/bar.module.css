@@ -1,3 +1,12 @@
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .bar {
   position: absolute;
   bottom: 0;
@@ -88,6 +97,7 @@
 
 .player__btnPlay {
   margin-right: 23px;
+  position: relative;
 }
 
 .player__btnPlaySvg {
@@ -138,6 +148,23 @@
 .player__btnSvgActive {
   stroke: #ffffff;
 }
+
+.player__loadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000c0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.player__btnLoading {
+  color: #b672ff;
+  animation: spin 1s linear infinite;
+}
+
 .btn {
   cursor: pointer;
 }
