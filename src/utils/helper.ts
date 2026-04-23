@@ -1,8 +1,12 @@
 import { TrackType } from '@/sharedTypes/sharedTypes';
 
 export function formatTime(time: number): string {
-  const minutes = Math.floor(time / 60);
+  const hours = Math.floor(time / 3600);
+  const minutes = Math.floor(time / 60) % 60;
   const seconds = Math.floor(time % 60);
+  if (hours > 0) {
+    return `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  }
   return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 }
 
@@ -23,3 +27,13 @@ export function getUnicValuesByKey(
   });
   return Array.from(uniqueValues);
 }
+
+export const getTimePanel = (
+  currentTime: number,
+  duration: number | undefined,
+): string => {
+  if (duration) {
+    return `${formatTime(currentTime)} / ${formatTime(duration)}`;
+  }
+  return formatTime(currentTime);
+};
