@@ -1,6 +1,6 @@
 'use client';
 
-import { authUser } from '@/services/auth/authApi';
+import { authUser, getToken } from '@/services/auth/authApi';
 import styles from './page.module.css';
 import classNames from 'classnames';
 import Link from 'next/link';
@@ -32,6 +32,16 @@ export default function Signin() {
     authUser({ email, password })
       .then((response) => {
         localStorage.setItem('user', JSON.stringify(response.username));
+      })
+      .then(() => {
+        return getToken({ email, password });
+      })
+      .then((response) => {
+        localStorage.setItem('accessToken', response.access);
+        localStorage.setItem('refreshToken', response.refresh);
+      })
+      .then(() => {
+        window.location.href = '/music/main';
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
