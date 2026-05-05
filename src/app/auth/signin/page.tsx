@@ -31,7 +31,7 @@ export default function Signin() {
     }
     authUser({ email, password })
       .then((response) => {
-        console.log(response);
+        localStorage.setItem('user', JSON.stringify(response.username));
       })
       .catch((error) => {
         if (error instanceof AxiosError) {

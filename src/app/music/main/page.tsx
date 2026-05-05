@@ -1,20 +1,28 @@
-import Bar from '@/components/Bar/Bar';
+'use client';
 import Centerblock from '@/components/Centerblock/Centerblock';
-import Nav from '@/components/Nav/Nav';
-import Sidebar from '@/components/Sidebar/Sidebar';
-import styles from './page.module.css';
+
+import { useEffect, useState } from 'react';
+import { getAllTracks } from '@/services/tracks/tracksApi';
+import { TrackType } from '@/sharedTypes/sharedTypes';
+import { AxiosError } from 'axios';
 
 export default function Home() {
-  return (
-    <div className={styles.wrapper}>
-      <div className={styles.container}>
-        <main className={styles.main}>
-          <Nav />
-          <Centerblock />
-          <Sidebar />
-        </main>
-        <Bar />
-      </div>
-    </div>
-  );
+  const [tracks, setTracks] = useState<TrackType[]>([]);
+  const [error, setError] = useState<string>('');
+  useEffect(() => {
+    getAllTracks()
+      .then((tracks) => setTracks(tracks))
+      .catch((error) => {
+        if (error instanceof AxiosError) {
+          if (error.response) {
+            setError(error.response.data);
+          } else if (error.request) {
+            setError('Что-то с интернетом');
+          } else {
+            setError('Неизвестная ошибка');
+          }
+        }
+      });
+  }, []);
+  return <Centerblock />;
 }
