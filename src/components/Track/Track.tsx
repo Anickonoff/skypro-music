@@ -35,8 +35,8 @@ export function Track({ track, playlist }: TrackProps) {
       <div className={styles.playlist__track}>
         <div className={styles.track__title}>
           <div className={styles.track__titleImage}>
-            {track.logo ? (
-              <img src={track.logo} alt="Track logo" />
+            {track.logo?.data && track.logo.data.length > 0 ? (
+              <img src={track.logo.data[0]} alt="Track logo" />
             ) : (
               <svg
                 className={classNames(styles.track__titleSvg, {

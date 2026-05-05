@@ -1,16 +1,39 @@
+'use client';
+
 import classNames from 'classnames';
 import styles from './centerblock.module.css';
 import Search from '../Search/Search';
-import { data } from '@/data';
 import { Track } from '../Track/Track';
 import { Filter } from '../Filter/Filter';
 import { getUnicValuesByKey } from '@/utils/helper';
 import { FilterListItems } from '@/sharedFilters/types';
+import { useEffect, useState } from 'react';
+import { TrackType } from '@/sharedTypes/sharedTypes';
+import { getAllTracks } from '@/services/tracks/tracksApi';
 
 export default function Centerblock() {
+  const [allTracks, setAllTracks] = useState<TrackType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTracks = async () => {
+      try {
+        const tracks = await getAllTracks();
+        setAllTracks(tracks);
+      } catch (err) {
+        setError('Failed to fetch tracks');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTracks();
+  }, []);
+
   const FilterListItems: FilterListItems = {
-    genre: getUnicValuesByKey(data, 'genre'),
-    author: getUnicValuesByKey(data, 'author'),
+    genre: getUnicValuesByKey(allTracks, 'genre'),
+    author: getUnicValuesByKey(allTracks, 'author'),
     year: ['По умолчанию', 'Сначала новые', 'Сначала старые'],
   };
 
@@ -37,8 +60,8 @@ export default function Centerblock() {
           </div>
         </div>
         <div className={styles.content__playlist}>
-          {data.map((item) => (
-            <Track key={item._id} track={item} playlist={data} />
+          {allTracks.map((item) => (
+            <Track key={item._id} track={item} playlist={allTracks} />
           ))}
         </div>
       </div>

@@ -7,3 +7,9 @@ export const getAllTracks = (): Promise<TrackType[]> => {
     (response) => response.data.data,
   );
 };
+
+export const getSelectionById = (id: string): Promise<TrackType[]> => {
+  return axios(BASE_URL + `/catalog/selection/${id}`).then(
+    (response) => response.data.data,
+  );
+};
