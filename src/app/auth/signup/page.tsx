@@ -46,14 +46,7 @@ export default function SignUp() {
         localStorage.setItem('user', JSON.stringify(response.result.username));
       })
       .then(() => {
-        return getToken({ email, password });
-      })
-      .then((response) => {
-        localStorage.setItem('accessToken', response.access);
-        localStorage.setItem('refreshToken', response.refresh);
-      })
-      .then(() => {
-        window.location.href = '/music/main';
+        window.location.href = '/auth/signin';
       })
       .catch((error) => {
         if (error instanceof AxiosError) {

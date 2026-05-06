@@ -1,8 +1,5 @@
-'use client';
-
-import { useParams } from 'next/navigation';
+import Centerblock from '@/components/Centerblock/Centerblock';
 
 export default function CategoryPage() {
-  const params = useParams<{ id: string }>();
-  return <h1>Категория {params.id}</h1>;
+  return <Centerblock />;
 }
