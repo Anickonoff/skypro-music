@@ -18,8 +18,10 @@ export default function Centerblock() {
   const [selectionTracks, setSelectionTracks] = useState<
     SelectionTracksType | 'all'
   >('all');
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [isTracksLoading, setIsTracksLoading] = useState(true);
+  const [isSelectionLoading, setIsSelectionLoading] = useState(true);
+  const [tracksError, setTracksError] = useState<string | null>(null);
+  const [selectionError, setSelectionError] = useState<string | null>(null);
 
   const params = useParams<{ id: string }>();
 
@@ -41,36 +43,36 @@ export default function Centerblock() {
       .catch((error) => {
         if (error instanceof AxiosError) {
           if (error.response) {
-            setError(error.response.data);
+            setTracksError(error.response.data);
           } else if (error.request) {
-            setError('Что-то с интернетом');
+            setTracksError('Что-то с интернетом');
           } else {
-            setError('Неизвестная ошибка');
+            setTracksError('Неизвестная ошибка');
           }
         }
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => setIsTracksLoading(false));
   }, []);
 
   useEffect(() => {
     if (!params.id) {
       setSelectionTracks('all');
     } else {
-      setIsLoading(true);
+      setIsSelectionLoading(true);
       getSelectionById(params.id)
         .then((selectionTracks) => setSelectionTracks(selectionTracks))
         .catch((error) => {
           if (error instanceof AxiosError) {
             if (error.response) {
-              setError(error.response.data);
+              setSelectionError(error.response.data);
             } else if (error.request) {
-              setError('Что-то с интернетом');
+              setSelectionError('Что-то с интернетом');
             } else {
-              setError('Неизвестная ошибка');
+              setSelectionError('Неизвестная ошибка');
             }
           }
         })
-        .finally(() => setIsLoading(false));
+        .finally(() => setIsSelectionLoading(false));
     }
   }, [params.id]);
 
@@ -107,10 +109,12 @@ export default function Centerblock() {
           </div>
         </div>
         <div className={styles.content__playlist}>
-          {isLoading ? (
+          {isTracksLoading || isSelectionLoading ? (
             <p>Загрузка...</p>
-          ) : error ? (
-            <p>{error}</p>
+          ) : tracksError ? (
+            <p>Ошибка загрузки списка песен: {tracksError}</p>
+          ) : selectionError ? (
+            <p>Ошибка загрузки выбранной плейлиста: {selectionError}</p>
           ) : (
             playlist.map((item) => (
               <Track key={item._id} track={item} playlist={playlist} />
