@@ -71,9 +71,9 @@ export default function Centerblock() {
               setSelectionError('Неизвестная ошибка');
             }
           }
-        })
-        .finally(() => setIsSelectionLoading(false));
+        });
     }
+    setIsSelectionLoading(false);
   }, [params.id]);
 
   const FilterListItems: FilterListItems = {
