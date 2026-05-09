@@ -9,20 +9,20 @@ import { getUnicValuesByKey } from '@/utils/helper';
 import { FilterListItems } from '@/sharedFilters/types';
 import { useEffect, useState } from 'react';
 import { SelectionTracksType, TrackType } from '@/sharedTypes/sharedTypes';
-import { getAllTracks, getSelectionById } from '@/services/tracks/tracksApi';
+import { getSelectionById } from '@/services/tracks/tracksApi';
 import { useParams } from 'next/navigation';
 import { AxiosError } from 'axios';
+import { useAppSelector } from '@/store/store';
 
 export default function Centerblock() {
-  const [allTracks, setAllTracks] = useState<TrackType[]>([]);
+  const { allTracks, fetchError, fetching } = useAppSelector(
+    (state) => state.track,
+  );
   const [selectionTracks, setSelectionTracks] = useState<
     SelectionTracksType | 'all'
   >('all');
-  const [isTracksLoading, setIsTracksLoading] = useState(true);
   const [isSelectionLoading, setIsSelectionLoading] = useState(true);
-  const [tracksError, setTracksError] = useState<string | null>(null);
   const [selectionError, setSelectionError] = useState<string | null>(null);
-
   const params = useParams<{ id: string }>();
 
   const getTracksForPlaylist = (
@@ -38,51 +38,54 @@ export default function Centerblock() {
   };
 
   useEffect(() => {
-    getAllTracks()
-      .then((tracks) => setAllTracks(tracks))
-      .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setTracksError(error.response.data);
-          } else if (error.request) {
-            setTracksError('Что-то с интернетом');
-          } else {
-            setTracksError('Неизвестная ошибка');
-          }
-        }
-      })
-      .finally(() => setIsTracksLoading(false));
-  }, []);
-
-  useEffect(() => {
-    if (!params.id) {
-      setSelectionTracks('all');
-    } else {
-      setIsSelectionLoading(true);
-      getSelectionById(params.id)
-        .then((selectionTracks) => setSelectionTracks(selectionTracks))
-        .catch((error) => {
-          if (error instanceof AxiosError) {
-            if (error.response) {
-              setSelectionError(error.response.data);
-            } else if (error.request) {
-              setSelectionError('Что-то с интернетом');
-            } else {
-              setSelectionError('Неизвестная ошибка');
+    if (!fetching && allTracks.length) {
+      setSelectionError(null);
+      if (!params.id) {
+        setSelectionTracks('all');
+        setIsSelectionLoading(false);
+      } else {
+        setIsSelectionLoading(true);
+        getSelectionById(params.id)
+          .then((selectionTracks) => {
+            setSelectionTracks(selectionTracks);
+          })
+          .catch((error) => {
+            if (error instanceof AxiosError) {
+              if (error.response) {
+                setSelectionError(error.response.data);
+              } else if (error.request) {
+                setSelectionError('Что-то с интернетом');
+              } else {
+                setSelectionError('Неизвестная ошибка');
+              }
             }
-          }
-        });
+          })
+          .finally(() => setIsSelectionLoading(false));
+      }
     }
-    setIsSelectionLoading(false);
-  }, [params.id]);
+  }, [params.id, fetching]);
 
-  const FilterListItems: FilterListItems = {
+  const filterListItems: FilterListItems = {
     genre: getUnicValuesByKey(allTracks, 'genre'),
     author: getUnicValuesByKey(allTracks, 'author'),
     year: ['По умолчанию', 'Сначала новые', 'Сначала старые'],
   };
 
-  const playlist = getTracksForPlaylist(selectionTracks);
+  const playlist: TrackType[] = getTracksForPlaylist(selectionTracks);
+
+  const playlistContent = () => {
+    if (fetchError) {
+      return <p>Ошибка загрузки списка песен: {fetchError}</p>;
+    } else if (selectionError) {
+      return <p>Ошибка загрузки выбранного плейлиста: {selectionError}</p>;
+    } else if (fetching || isSelectionLoading) {
+      return <p>Загрузка...</p>;
+    } else {
+      return playlist.map((item) => (
+        <Track key={item._id} track={item} playlist={playlist} />
+      ));
+    }
+  };
 
   return (
     <div className={styles.centerblock}>
@@ -90,7 +93,7 @@ export default function Centerblock() {
       <h2 className={styles.centerblock__h2}>
         {selectionTracks === 'all' ? 'Треки' : selectionTracks.name}
       </h2>
-      <Filter filterListItems={FilterListItems} />
+      <Filter filterListItems={filterListItems} />
       <div className={styles.centerblock__content}>
         <div className={styles.content__title}>
           <div className={classNames(styles.playlistTitle__col, styles.col01)}>
@@ -108,19 +111,7 @@ export default function Centerblock() {
             </svg>
           </div>
         </div>
-        <div className={styles.content__playlist}>
-          {isTracksLoading || isSelectionLoading ? (
-            <p>Загрузка...</p>
-          ) : tracksError ? (
-            <p>Ошибка загрузки списка песен: {tracksError}</p>
-          ) : selectionError ? (
-            <p>Ошибка загрузки выбранной плейлиста: {selectionError}</p>
-          ) : (
-            playlist.map((item) => (
-              <Track key={item._id} track={item} playlist={playlist} />
-            ))
-          )}
-        </div>
+        <div className={styles.content__playlist}>{playlistContent()}</div>
       </div>
     </div>
   );
