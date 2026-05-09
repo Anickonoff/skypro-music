@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import styles from './sidebar.module.css';
 
 export default function Sidebar() {
@@ -14,7 +15,7 @@ export default function Sidebar() {
       <div className={styles.sidebar__block}>
         <div className={styles.sidebar__list}>
           <div className={styles.sidebar__item}>
-            <a className={styles.sidebar__link} href="#">
+            <Link className={styles.sidebar__link} href="/music/category/2">
               <img
                 className={styles.sidebar__img}
                 src="/img/playlist01.png"
@@ -22,29 +23,29 @@ export default function Sidebar() {
                 width={250}
                 height={170}
               />
-            </a>
+            </Link>
           </div>
           <div className={styles.sidebar__item}>
-            <a className={styles.sidebar__link} href="#">
+            <Link className={styles.sidebar__link} href="/music/category/3">
               <img
                 className={styles.sidebar__img}
                 src="/img/playlist02.png"
-                alt="day's playlist"
+                alt="100 dance hits"
                 width={250}
                 height={170}
               />
-            </a>
+            </Link>
           </div>
           <div className={styles.sidebar__item}>
-            <a className={styles.sidebar__link} href="#">
+            <Link className={styles.sidebar__link} href="/music/category/4">
               <img
                 className={styles.sidebar__img}
                 src="/img/playlist03.png"
-                alt="day's playlist"
+                alt="indie charge"
                 width={250}
                 height={170}
               />
-            </a>
+            </Link>
           </div>
         </div>
       </div>
