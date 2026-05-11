@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import Link from 'next/link';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
+import { useRouter } from 'next/navigation';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
@@ -13,6 +14,7 @@ export default function SignUp() {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -46,7 +48,7 @@ export default function SignUp() {
         localStorage.setItem('user', JSON.stringify(response.result.username));
       })
       .then(() => {
-        window.location.href = '/auth/signin';
+        router.push('/auth/signin');
       })
       .catch((error) => {
         if (error instanceof AxiosError) {

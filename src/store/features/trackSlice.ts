@@ -24,7 +24,7 @@ const initialState: initialStateType = {
 };
 
 const trackSlice = createSlice({
-  name: 'tracks',
+  name: 'track',
   initialState,
   reducers: {
     setCurrentTrack: (state, action: PayloadAction<TrackType>) => {

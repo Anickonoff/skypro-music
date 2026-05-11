@@ -6,11 +6,13 @@ import {
   useSelector,
   useStore,
 } from 'react-redux';
+import { authSliceReducer } from './features/authSlice';
 
 export const makeStore = () => {
   return configureStore({
     reducer: combineReducers({
       track: trackSliceReducer,
+      auth: authSliceReducer,
     }),
   });
 };

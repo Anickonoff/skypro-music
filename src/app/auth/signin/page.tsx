@@ -6,12 +6,21 @@ import classNames from 'classnames';
 import Link from 'next/link';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
+import { useRouter } from 'next/navigation';
+import { useAppDispatch } from '@/store/store';
+import {
+  setAccessToken,
+  setRefreshToken,
+  setUsername,
+} from '@/store/features/authSlice';
 
 export default function Signin() {
+  const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -31,17 +40,15 @@ export default function Signin() {
     }
     authUser({ email, password })
       .then((response) => {
-        localStorage.setItem('user', JSON.stringify(response.username));
+        dispatch(setUsername(response.username));
       })
       .then(() => {
         return getToken({ email, password });
       })
       .then((response) => {
-        localStorage.setItem('accessToken', response.access);
-        localStorage.setItem('refreshToken', response.refresh);
-      })
-      .then(() => {
-        window.location.href = '/music/main';
+        dispatch(setAccessToken(response.access));
+        dispatch(setRefreshToken(response.refresh));
+        router.push('/music/main');
       })
       .catch((error) => {
         if (error instanceof AxiosError) {
