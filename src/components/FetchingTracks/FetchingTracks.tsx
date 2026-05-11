@@ -47,27 +47,30 @@ export default function FetchingTracks() {
       // dispatch(setFetching(false));
       return;
     } else {
-      // dispatch(setFetching(true));
-      withReauth(
-        (newToken) => getFavoriteTracks(newToken || accessToken),
-        refreshToken,
-        dispatch,
-      )
-        .then((tracks) => dispatch(setFavoriteTracks(tracks)))
-        .catch((error) => {
-          if (error instanceof AxiosError) {
-            if (error.response) {
-              dispatch(setFetchError(error.response.data));
-            } else if (error.request) {
-              dispatch(setFetchError('Что-то с интернетом'));
-            } else {
-              dispatch(setFetchError('Неизвестная ошибка'));
+      if (accessToken) {
+        // dispatch(setFetching(true));
+        console.log('fetching favorite with token', accessToken);
+        withReauth(
+          (newToken) => getFavoriteTracks(newToken || accessToken),
+          refreshToken,
+          dispatch,
+        )
+          .then((tracks) => dispatch(setFavoriteTracks(tracks)))
+          .catch((error) => {
+            if (error instanceof AxiosError) {
+              if (error.response) {
+                dispatch(setFetchError(error.response.data));
+              } else if (error.request) {
+                dispatch(setFetchError('Что-то с интернетом'));
+              } else {
+                dispatch(setFetchError('Неизвестная ошибка'));
+              }
             }
-          }
-        });
-      // .finally(() => dispatch(setFetching(false)));
+          });
+        // .finally(() => dispatch(setFetching(false)));
+      }
     }
-  }, []);
+  }, [accessToken]);
 
   return <></>;
 }

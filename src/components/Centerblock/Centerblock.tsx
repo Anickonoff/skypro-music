@@ -10,26 +10,30 @@ import { FilterListItems } from '@/sharedFilters/types';
 import { useEffect, useState } from 'react';
 import { SelectionTracksType, TrackType } from '@/sharedTypes/sharedTypes';
 import { getSelectionById } from '@/services/tracks/tracksApi';
-import { useParams } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import { AxiosError } from 'axios';
 import { useAppSelector } from '@/store/store';
 
 export default function Centerblock() {
-  const { allTracks, fetchError, fetching } = useAppSelector(
+  const { allTracks, fetchError, fetching, favoriteTracks } = useAppSelector(
     (state) => state.track,
   );
   const [selectionTracks, setSelectionTracks] = useState<
-    SelectionTracksType | 'all'
+    SelectionTracksType | 'all' | 'favorite'
   >('all');
   const [isSelectionLoading, setIsSelectionLoading] = useState(true);
   const [selectionError, setSelectionError] = useState<string | null>(null);
   const params = useParams<{ id: string }>();
+  const pathname = usePathname();
+  const isFavoritePage = pathname === '/music/favorite'; //понимаю, что так себе решение, но иначе переносить логики получения плейлистов и избранного в файлы page и пробрасывать в компонент только результат
 
   const getTracksForPlaylist = (
-    selection: SelectionTracksType | 'all',
+    selection: SelectionTracksType | 'all' | 'favorite',
   ): TrackType[] => {
     if (selection === 'all') {
       return allTracks;
+    } else if (selection === 'favorite') {
+      return favoriteTracks;
     } else {
       return selection.items
         .map((id) => allTracks.find((track) => track._id === id))
@@ -41,8 +45,13 @@ export default function Centerblock() {
     if (!fetching && allTracks.length) {
       setSelectionError(null);
       if (!params.id) {
-        setSelectionTracks('all');
-        setIsSelectionLoading(false);
+        if (!isFavoritePage) {
+          setSelectionTracks('all');
+          setIsSelectionLoading(false);
+        } else {
+          setSelectionTracks('favorite');
+          setIsSelectionLoading(false);
+        }
       } else {
         setIsSelectionLoading(true);
         getSelectionById(params.id)
@@ -63,7 +72,7 @@ export default function Centerblock() {
           .finally(() => setIsSelectionLoading(false));
       }
     }
-  }, [params.id, fetching]);
+  }, [params.id, fetching, isFavoritePage]);
 
   const filterListItems: FilterListItems = {
     genre: getUnicValuesByKey(allTracks, 'genre'),
@@ -91,7 +100,11 @@ export default function Centerblock() {
     <div className={styles.centerblock}>
       <Search />
       <h2 className={styles.centerblock__h2}>
-        {selectionTracks === 'all' ? 'Треки' : selectionTracks.name}
+        {selectionTracks === 'all'
+          ? 'Треки'
+          : selectionTracks === 'favorite'
+            ? 'Мои треки'
+            : selectionTracks.name}
       </h2>
       <Filter filterListItems={filterListItems} />
       <div className={styles.centerblock__content}>
