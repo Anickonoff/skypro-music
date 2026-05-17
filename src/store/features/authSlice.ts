@@ -1,15 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type initialStateType = {
+type authDataType = {
   username: string;
   accessToken: string;
   refreshToken: string;
+};
+
+type initialStateType = authDataType & {
+  authInitialized: boolean;
 };
 
 const initialState: initialStateType = {
   username: '',
   accessToken: '',
   refreshToken: '',
+  authInitialized: false,
 };
 
 const authSlice = createSlice({
@@ -28,6 +33,12 @@ const authSlice = createSlice({
       state.refreshToken = action.payload;
       localStorage.setItem('refreshToken', action.payload);
     },
+    initializeAuth: (state, action: PayloadAction<authDataType>) => {
+      state.username = action.payload.username;
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
+      state.authInitialized = true;
+    },
     clearUserData: (state) => {
       state.username = '';
       state.accessToken = '';
@@ -39,6 +50,11 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUsername, setAccessToken, setRefreshToken, clearUserData } =
-  authSlice.actions;
+export const {
+  clearUserData,
+  initializeAuth,
+  setAccessToken,
+  setRefreshToken,
+  setUsername,
+} = authSlice.actions;
 export const authSliceReducer = authSlice.reducer;

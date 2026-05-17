@@ -4,12 +4,13 @@ import Image from 'next/image';
 import styles from './nav.module.css';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useAppDispatch } from '@/store/store';
+import { useAppDispatch, useAppSelector } from '@/store/store';
 import { clearUserData } from '@/store/features/authSlice';
 
 export default function Nav() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+  const { accessToken } = useAppSelector((state) => state.auth);
   const toggleMenu = (): void => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -42,21 +43,26 @@ export default function Nav() {
                 Главное
               </Link>
             </li>
-            <li className={styles.menu__item}>
-              <Link href="/music/favorite" className={styles.menu__link}>
-                Мой плейлист
-              </Link>
-            </li>
-            <li className={styles.menu__item}>
-              <Link href="/auth/signin" className={styles.menu__link}>
-                Войти
-              </Link>
-            </li>
-            <li className={styles.menu__item}>
-              <p className={styles.menu__link} onClick={logout}>
-                Выйти
-              </p>
-            </li>
+            {accessToken ? (
+              <>
+                <li className={styles.menu__item}>
+                  <Link href="/music/favorite" className={styles.menu__link}>
+                    Мой плейлист
+                  </Link>
+                </li>
+                <li className={styles.menu__item}>
+                  <p className={styles.menu__link} onClick={logout}>
+                    Выйти
+                  </p>
+                </li>
+              </>
+            ) : (
+              <li className={styles.menu__item}>
+                <Link href="/auth/signin" className={styles.menu__link}>
+                  Войти
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       )}

@@ -49,7 +49,6 @@ export default function FetchingTracks() {
     } else {
       if (accessToken) {
         // dispatch(setFetching(true));
-        console.log('fetching favorite with token', accessToken);
         withReauth(
           (newToken) => getFavoriteTracks(newToken || accessToken),
           refreshToken,

@@ -1,6 +1,6 @@
 'use client';
 
-import { getToken, signUpUser } from '@/services/auth/authApi';
+import { signUpUser } from '@/services/auth/authApi';
 import styles from './page.module.css';
 import classNames from 'classnames';
 import Link from 'next/link';
