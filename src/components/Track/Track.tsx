@@ -31,6 +31,11 @@ export function Track({ track, playlist }: TrackProps) {
     dispatch(setCurrentPlayList(playlist));
   };
 
+  const onClickLike = (event: React.MouseEvent<SVGSVGElement>) => {
+    event.stopPropagation();
+    toggleLike();
+  };
+
   return (
     <div
       key={track._id}
@@ -72,7 +77,7 @@ export function Track({ track, playlist }: TrackProps) {
           </a>
         </div>
         <div className={styles.track__time}>
-          <svg className={styles.track__timeSvg} onClick={toggleLike}>
+          <svg className={styles.track__timeSvg} onClick={onClickLike}>
             <use
               xlinkHref={`/img/icon/sprite.svg#${isLike ? 'icon-dislike' : 'icon-like'}`}
             ></use>
