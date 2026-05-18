@@ -10,6 +10,7 @@ import {
 } from '@/store/features/trackSlice';
 import classNames from 'classnames';
 import { useLikeTrack } from '@/hooks/useLikeTracks';
+import { selectAuthStatus } from '@/store/features/authSelectors';
 
 type TrackProps = {
   track: TrackType;
@@ -21,6 +22,7 @@ export function Track({ track, playlist }: TrackProps) {
   const isPlaying = useAppSelector((state) => state.track.isPlaying);
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
   const isActive = isPlaying && track._id === currentTrack?._id;
+  const authStatus = useAppSelector(selectAuthStatus);
 
   const { toggleLike, isLike } = useLikeTrack(track);
 
@@ -69,12 +71,16 @@ export function Track({ track, playlist }: TrackProps) {
             {track.album}
           </a>
         </div>
-        <div>
+        <div className={styles.track__time}>
           <svg className={styles.track__timeSvg} onClick={toggleLike}>
             <use
               xlinkHref={`/img/icon/sprite.svg#${isLike ? 'icon-dislike' : 'icon-like'}`}
             ></use>
           </svg>
+          <div className={styles.track__tooltip}>
+            {authStatus === 'unauthorized' &&
+              'Войдите, чтобы добавить в избранное'}
+          </div>
           <span className={styles.track__timeText}>
             {formatTime(track.duration_in_seconds)}
           </span>

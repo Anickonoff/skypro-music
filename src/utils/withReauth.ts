@@ -1,5 +1,5 @@
 import { refreshToken } from '@/services/auth/authApi';
-import { clearUserData, setAccessToken } from '@/store/features/authSlice';
+import { setAccessToken } from '@/store/features/authSlice';
 import { AppDispatch } from '@/store/store';
 import { AxiosError } from 'axios';
 
@@ -18,7 +18,6 @@ export const withReauth = async <T>(
         dispatch(setAccessToken(newTokens.access));
         return await apiFunction(newTokens.access);
       } catch (refreshError) {
-        // dispatch(clearUserData());
         throw refreshError;
       }
     }

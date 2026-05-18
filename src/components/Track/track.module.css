@@ -124,7 +124,6 @@
 .track__timeSvg {
   width: 14px;
   height: 12px;
-  margin-right: 17px;
   fill: transparent;
   stroke: #696969;
 }
@@ -134,6 +133,29 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
+  display: inline-block;
+  width: 45px;
   text-align: right;
   color: #696969;
+}
+
+.track__time {
+  position: relative;
+}
+
+.track__tooltip {
+  display: none;
+  position: absolute;
+  top: -15px;
+  right: 50%;
+  background-color: #313131;
+  color: #ffffff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.track__timeSvg:hover + .track__tooltip {
+  display: block;
 }

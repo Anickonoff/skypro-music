@@ -292,6 +292,27 @@
   stroke: #696969;
 }
 
+.traclPlay__likebtn {
+  position: relative;
+}
+
+.trackPlay__tooltip {
+  display: none;
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  background-color: #313131;
+  color: #ffffff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.trackPlay__likeSvg:hover + .trackPlay__tooltip {
+  display: block;
+}
+
 .bar__volumeBlock {
   width: auto;
   display: -webkit-box;
