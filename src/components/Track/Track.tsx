@@ -11,6 +11,7 @@ import {
 import classNames from 'classnames';
 import { useLikeTrack } from '@/hooks/useLikeTracks';
 import { selectAuthStatus } from '@/store/features/authSelectors';
+import { useState } from 'react';
 
 type TrackProps = {
   track: TrackType;
@@ -24,7 +25,9 @@ export function Track({ track, playlist }: TrackProps) {
   const isActive = isPlaying && track._id === currentTrack?._id;
   const authStatus = useAppSelector(selectAuthStatus);
 
-  const { toggleLike, isLike } = useLikeTrack(track);
+  const { toggleLike, isLike, isLiking } = useLikeTrack(track);
+  const isUnauthorized = authStatus === 'unauthorized';
+  const [isDeniedClick, setIsDeniedClick] = useState<boolean>(false);
 
   const onClickTrack = () => {
     dispatch(setCurrentTrack(track));
@@ -33,7 +36,14 @@ export function Track({ track, playlist }: TrackProps) {
 
   const onClickLike = (event: React.MouseEvent<SVGSVGElement>) => {
     event.stopPropagation();
-    toggleLike();
+    if (isUnauthorized) {
+      setIsDeniedClick(true);
+      setTimeout(() => {
+        setIsDeniedClick(false);
+      }, 500);
+    } else {
+      toggleLike();
+    }
   };
 
   return (
@@ -77,7 +87,13 @@ export function Track({ track, playlist }: TrackProps) {
           </a>
         </div>
         <div className={styles.track__time}>
-          <svg className={styles.track__timeSvg} onClick={onClickLike}>
+          <svg
+            className={classNames(styles.track__timeSvg, {
+              [styles.track__timeSvgLoading]: isLiking,
+              [styles.track__timeSvgUnauthorized]: isDeniedClick,
+            })}
+            onClick={onClickLike}
+          >
             <use
               xlinkHref={`/img/icon/sprite.svg#${isLike ? 'icon-dislike' : 'icon-like'}`}
             ></use>

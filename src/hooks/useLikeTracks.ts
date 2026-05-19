@@ -7,7 +7,7 @@ import { AxiosError } from 'axios';
 import { useState } from 'react';
 
 type returnTypeHook = {
-  isLoading: boolean;
+  isLiking: boolean;
   errorMsg: string | null;
   toggleLike: () => void;
   isLike: boolean;
@@ -19,7 +19,7 @@ export const useLikeTrack = (track: TrackType | null): returnTypeHook => {
   const dispatch = useAppDispatch();
 
   const isLike = favoriteTracks.some((t) => t._id === track?._id);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLiking, setIsLiking] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const toggleLike = () => {
@@ -30,7 +30,7 @@ export const useLikeTrack = (track: TrackType | null): returnTypeHook => {
     const actionApi = isLike ? removeLike : addLike;
     const actionSlice = isLike ? removeLikedTracks : addLikedTracks;
 
-    setIsLoading(true);
+    setIsLiking(true);
     setErrorMsg(null);
     if (track) {
       withReauth(
@@ -53,13 +53,13 @@ export const useLikeTrack = (track: TrackType | null): returnTypeHook => {
           }
         })
         .finally(() => {
-          setIsLoading(false);
+          setIsLiking(false);
         });
     }
   };
 
   return {
-    isLoading,
+    isLiking,
     errorMsg,
     toggleLike,
     isLike,
