@@ -124,9 +124,63 @@
 .track__timeSvg {
   width: 14px;
   height: 12px;
-  margin-right: 17px;
   fill: transparent;
   stroke: #696969;
+  transform-origin: center;
+}
+
+.track__timeSvgUnauthorized {
+  animation: trackDenied 0.45s ease-in-out;
+  stroke: #ff6b6b;
+}
+
+.track__timeSvgLoading {
+  animation: trackPulse 1s ease-in-out infinite;
+  stroke: #b3b3b3;
+  opacity: 0.85;
+}
+
+@keyframes trackDenied {
+  0% {
+    transform: translateX(0) scale(1);
+  }
+  20% {
+    transform: translateX(-2px) scale(0.96);
+  }
+  40% {
+    transform: translateX(2px) scale(0.96);
+  }
+  60% {
+    transform: translateX(-1px) scale(0.98);
+  }
+  80% {
+    transform: translateX(1px) scale(0.98);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes trackPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track__timeSvgUnauthorized,
+  .track__timeSvgLoading {
+    animation: none;
+  }
 }
 
 .track__timeText {
@@ -134,6 +188,29 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
+  display: inline-block;
+  width: 45px;
   text-align: right;
   color: #696969;
+}
+
+.track__time {
+  position: relative;
+}
+
+.track__tooltip {
+  display: none;
+  position: absolute;
+  top: -15px;
+  right: 50%;
+  background-color: #313131;
+  color: #ffffff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.track__timeSvg:hover + .track__tooltip {
+  display: block;
 }

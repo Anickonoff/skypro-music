@@ -12,6 +12,8 @@ import {
 } from '@/store/features/trackSlice';
 import { getTimePanel } from '@/utils/helper';
 import ProgressBar from '../ProgressBar/ProgressBar';
+import { useLikeTrack } from '@/hooks/useLikeTracks';
+import { selectAuthStatus } from '@/store/features/authSelectors';
 
 export default function Bar() {
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
@@ -24,6 +26,8 @@ export default function Bar() {
   const [isLoadedTrack, setIsLoadedTrack] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(0.5);
   const [currentTime, setCurrentTime] = useState<number>(0);
+  const { toggleLike, isLike } = useLikeTrack(currentTrack);
+  const authStatus = useAppSelector(selectAuthStatus);
 
   // useEffect(() => {
   //   if (!audioRef.current) {
@@ -216,21 +220,24 @@ export default function Bar() {
                   className={classNames(
                     styles.player__btnShuffle,
                     styles.btnIcon,
+                    styles.traclPlay__likebtn,
                   )}
+                  onClick={toggleLike}
                 >
-                  <svg className={styles.trackPlay__likeSvg}>
-                    <use xlinkHref="/img/icon/sprite.svg#icon-like"></use>
-                  </svg>
-                </div>
-                <div
-                  className={classNames(
-                    styles.trackPlay__dislike,
-                    styles.btnIcon,
+                  {isLike ? (
+                    <svg className={styles.trackPlay__dislikeSvg}>
+                      <use xlinkHref="/img/icon/sprite.svg#icon-dislike"></use>
+                    </svg>
+                  ) : (
+                    <svg className={styles.trackPlay__likeSvg}>
+                      <use xlinkHref="/img/icon/sprite.svg#icon-like"></use>
+                    </svg>
                   )}
-                >
-                  <svg className={styles.trackPlay__dislikeSvg}>
-                    <use xlinkHref="/img/icon/sprite.svg#icon-dislike"></use>
-                  </svg>
+                  {authStatus === 'unauthorized' && (
+                    <div className={styles.trackPlay__tooltip}>
+                      Войдите, чтобы добавить в избранное
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

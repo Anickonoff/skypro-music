@@ -1,41 +1,13 @@
 import { BASE_URL } from '../constants';
 import axios from 'axios';
-
-type authUserProps = {
-  email: string;
-  password: string;
-};
-
-type authUserResponse = {
-  email: string;
-  username: string;
-  _id: number;
-};
-
-type signUpUserProps = {
-  email: string;
-  password: string;
-  username: string;
-};
-
-type signUpUserResponse = {
-  message: string;
-  result: {
-    email: string;
-    username: string;
-    _id: number;
-  };
-  success: boolean;
-};
-
-type getTokenResponse = {
-  refresh: string;
-  access: string;
-};
-
-type refreshTokenResponse = {
-  access: string;
-};
+import {
+  authUserProps,
+  authUserResponse,
+  getTokenResponse,
+  refreshTokenResponse,
+  signUpUserProps,
+  signUpUserResponse,
+} from './types';
 
 export const authUser = (data: authUserProps): Promise<authUserResponse> => {
   return axios
