@@ -98,10 +98,11 @@ export function Track({ track, playlist }: TrackProps) {
               xlinkHref={`/img/icon/sprite.svg#${isLike ? 'icon-dislike' : 'icon-like'}`}
             ></use>
           </svg>
-          <div className={styles.track__tooltip}>
-            {authStatus === 'unauthorized' &&
-              'Войдите, чтобы добавить в избранное'}
-          </div>
+          {authStatus === 'unauthorized' && (
+            <div className={styles.track__tooltip}>
+              Войдите, чтобы добавить в избранное
+            </div>
+          )}
           <span className={styles.track__timeText}>
             {formatTime(track.duration_in_seconds)}
           </span>

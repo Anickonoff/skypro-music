@@ -233,10 +233,11 @@ export default function Bar() {
                       <use xlinkHref="/img/icon/sprite.svg#icon-like"></use>
                     </svg>
                   )}
-                  <div className={styles.trackPlay__tooltip}>
-                    {authStatus === 'unauthorized' &&
-                      'Войдите, чтобы добавить в избранное'}
-                  </div>
+                  {authStatus === 'unauthorized' && (
+                    <div className={styles.trackPlay__tooltip}>
+                      Войдите, чтобы добавить в избранное
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
