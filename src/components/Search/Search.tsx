@@ -1,13 +1,13 @@
-'use client';
-
-import { useState } from 'react';
 import styles from './search.module.css';
 
-export default function Search() {
-  const [searchInput, setSearchInput] = useState('');
+type SearchProps = {
+  onInputChange: (query: string) => void;
+  inputValue: string;
+};
 
+export default function Search({ onInputChange, inputValue }: SearchProps) {
   const onSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(e.target.value);
+    onInputChange(e.target.value);
   };
   return (
     <div className={styles.centerblock__search}>
@@ -19,7 +19,7 @@ export default function Search() {
         type="search"
         placeholder="Поиск"
         name="search"
-        value={searchInput}
+        value={inputValue}
         onChange={onSearchInput}
       />
     </div>
