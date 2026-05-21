@@ -11,7 +11,7 @@ import {
   FilterListItems,
   SelectedFilters,
 } from '@/sharedFilters/types';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { SelectionTracksType, TrackType } from '@/sharedTypes/sharedTypes';
 import { getSelectionById } from '@/services/tracks/tracksApi';
 import { useParams, usePathname } from 'next/navigation';
@@ -32,7 +32,7 @@ export default function Centerblock() {
   const params = useParams<{ id: string }>();
   const pathname = usePathname();
   const isFavoritePage = pathname === '/music/favorite'; //понимаю, что так себе решение, но иначе переносить логики получения плейлистов и избранного в файлы page и пробрасывать в компонент только результат
-
+  const isFilterDisabled = !!params.id; // отключение фильтров в подборках
   const getTracksForPlaylist = (
     selection: SelectionTracksType | 'all' | 'favorite',
   ): TrackType[] => {
@@ -123,6 +123,15 @@ export default function Centerblock() {
     setSearchQuery(query);
   }; // функция для обновления поискового запроса
 
+  useEffect(() => {
+    setSelectedFilters({
+      genre: [],
+      author: [],
+      year: 'По умолчанию',
+    });
+    setSearchQuery('');
+  }, [selectionTracks]); // сброс фильтров при смене плейлиста
+
   const basePlaylist: TrackType[] = getTracksForPlaylist(selectionTracks); // не фильтрованный плейлист текущей страницы
 
   const filteredPlaylist = getFilteredPlaylist({
@@ -159,6 +168,7 @@ export default function Centerblock() {
         filterListItems={filterListItems}
         selectedFilters={selectedFilters}
         onItemSelect={onItemSelect}
+        isDisabled={isFilterDisabled}
       />
       <div className={styles.centerblock__content}>
         <div className={styles.content__title}>

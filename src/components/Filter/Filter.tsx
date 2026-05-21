@@ -15,15 +15,18 @@ type FilterProps = {
   filterListItems: FilterListItems;
   selectedFilters: SelectedFilters;
   onItemSelect: (key: FilterKey, value: string) => void;
+  isDisabled: boolean;
 };
 
 export function Filter({
   filterListItems,
   selectedFilters,
   onItemSelect,
+  isDisabled,
 }: FilterProps) {
   const [activeFilter, setActiveFilter] = useState<FilterModal>(null);
   const handleFilterButtonClick = (newFilter: FilterKey) => {
+    if (isDisabled) return; // если фильтры отключены, не реагируем на клики
     setActiveFilter((prev) => (prev === newFilter ? null : newFilter));
   }; // переключение фильтра по клику на кнопку, если кликнули на уже открытый фильтр - закрываем его
 
@@ -75,6 +78,11 @@ export function Filter({
           />
         )}
       </div>
+      {isDisabled && (
+        <div className={styles.filter__disabled}>
+          Фильтры отключены на странице подборок
+        </div>
+      )}
     </div>
   );
 }

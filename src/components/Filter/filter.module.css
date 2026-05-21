@@ -11,6 +11,7 @@
   align-items: center;
   margin-bottom: 51px;
   color: #ffffff;
+  position: relative;
 }
 
 .filter__title {
@@ -36,4 +37,24 @@
 
 .filter__button:not(:last-child) {
   margin-right: 10px;
+}
+
+.filter__disabled {
+  display: none;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #fff;
+  position: absolute;
+  top: -100%;
+  left: 0;
+  background-color: #313131;
+  color: #ffffff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.filter__button:hover ~ .filter__disabled {
+  display: block;
 }
