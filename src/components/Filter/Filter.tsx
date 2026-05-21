@@ -42,12 +42,17 @@ export function Filter({
       >
         исполнителю
         {activeFilter === 'author' && (
-          <FilterItem
-            filterKey="author"
-            list={filterListItems}
-            selectedFilters={selectedFilters}
-            onItemSelect={onItemSelect}
-          />
+          <>
+            <FilterItem
+              filterKey="author"
+              list={filterListItems}
+              selectedFilters={selectedFilters}
+              onItemSelect={onItemSelect}
+            />
+            <div className={styles.filter__buttonCounter}>
+              {selectedFilters.author?.length || 0}
+            </div>
+          </>
         )}
       </div>
       <div
@@ -70,12 +75,17 @@ export function Filter({
       >
         жанру
         {activeFilter === 'genre' && (
-          <FilterItem
-            filterKey="genre"
-            list={filterListItems}
-            selectedFilters={selectedFilters}
-            onItemSelect={onItemSelect}
-          />
+          <>
+            <FilterItem
+              filterKey="genre"
+              list={filterListItems}
+              selectedFilters={selectedFilters}
+              onItemSelect={onItemSelect}
+            />
+            <div className={styles.filter__buttonCounter}>
+              {selectedFilters.genre?.length || 0}
+            </div>
+          </>
         )}
       </div>
       {isDisabled && (

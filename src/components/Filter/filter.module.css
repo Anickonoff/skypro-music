@@ -58,3 +58,15 @@
 .filter__button:hover ~ .filter__disabled {
   display: block;
 }
+
+.filter__buttonCounter {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  border-radius: 50%;
+  width: 26px;
+  background-color: #AD61FF;
+  color: #ffffff;
+  font-size: 13px;
+  text-align: center;
+}
