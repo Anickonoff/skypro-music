@@ -129,6 +129,11 @@
   transform-origin: center;
 }
 
+.track__timeSvgLiked {
+  stroke: #b672ff;
+  fill: #b672ff;
+}
+
 .track__timeSvgUnauthorized {
   animation: trackDenied 0.45s ease-in-out;
   stroke: #ff6b6b;
