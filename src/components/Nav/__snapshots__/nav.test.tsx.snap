@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Nav component snapshot Nav component snapshot 1`] = `
+<DocumentFragment>
+  <nav
+    class="main__nav"
+  >
+    <div
+      class="nav__logo"
+    >
+      <img
+        alt="logo"
+        class="logo__image"
+        data-nimg="1"
+        decoding="async"
+        height="170"
+        loading="lazy"
+        src="/_next/image?url=%2Fimg%2Flogo.png&w=640&q=75"
+        srcset="/_next/image?url=%2Fimg%2Flogo.png&w=256&q=75 1x, /_next/image?url=%2Fimg%2Flogo.png&w=640&q=75 2x"
+        style="color: transparent;"
+        width="250"
+      />
+    </div>
+    <div
+      class="nav__burger"
+    >
+      <span
+        class="burger__line"
+      />
+      <span
+        class="burger__line"
+      />
+      <span
+        class="burger__line"
+      />
+    </div>
+    <div
+      class="nav__menu"
+    >
+      <ul
+        class="menu__list"
+      >
+        <li
+          class="menu__item"
+        >
+          <a
+            class="menu__link"
+            href="/music/main"
+          >
+            Главное
+          </a>
+        </li>
+        <li
+          class="menu__item"
+        >
+          <a
+            class="menu__link"
+            href="/auth/signin"
+          >
+            Войти
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</DocumentFragment>
+`;
