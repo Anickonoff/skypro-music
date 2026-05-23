@@ -3,7 +3,7 @@
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import styles from './bar.module.css';
 import classNames from 'classnames';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react';
 import {
   setIsPlaying,
   setNextTrack,
@@ -26,8 +26,10 @@ export default function Bar() {
   const [isLoadedTrack, setIsLoadedTrack] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(0.5);
   const [currentTime, setCurrentTime] = useState<number>(0);
-  const { toggleLike, isLike } = useLikeTrack(currentTrack);
+  const { toggleLike, isLike, isLiking } = useLikeTrack(currentTrack);
   const authStatus = useAppSelector(selectAuthStatus);
+  const isUnauthorized = authStatus === 'unauthorized';
+  const [isDeniedClick, setIsDeniedClick] = useState<boolean>(false);
 
   // useEffect(() => {
   //   if (!audioRef.current) {
@@ -113,6 +115,18 @@ export default function Bar() {
   const onChangeProgress = (e: ChangeEvent<HTMLInputElement>) => {
     if (audioRef.current) {
       audioRef.current.currentTime = Number(e.target.value);
+    }
+  };
+
+  const onClickLike = (event: MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    if (isUnauthorized) {
+      setIsDeniedClick(true);
+      setTimeout(() => {
+        setIsDeniedClick(false);
+      }, 500);
+    } else {
+      toggleLike();
     }
   };
 
@@ -220,16 +234,21 @@ export default function Bar() {
                   className={classNames(
                     styles.player__btnShuffle,
                     styles.btnIcon,
-                    styles.traclPlay__likebtn,
+                    styles.trackPlay__likebtn,
                   )}
-                  onClick={toggleLike}
+                  onClick={onClickLike}
                 >
                   {isLike ? (
                     <svg className={styles.trackPlay__dislikeSvg}>
                       <use xlinkHref="/img/icon/sprite.svg#icon-dislike"></use>
                     </svg>
                   ) : (
-                    <svg className={styles.trackPlay__likeSvg}>
+                    <svg
+                      className={classNames(styles.trackPlay__likeSvg, {
+                        [styles.trackPlay__likeLoading]: isLiking,
+                        [styles.trackPlay__likeUnauthorized]: isDeniedClick,
+                      })}
+                    >
                       <use xlinkHref="/img/icon/sprite.svg#icon-like"></use>
                     </svg>
                   )}

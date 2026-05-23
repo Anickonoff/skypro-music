@@ -8,50 +8,28 @@ import {
   FilterListItems,
   SelectedFilters,
 } from '@/sharedFilters/types';
-import { filterConfig } from '@/sharedFilters/config';
 
 type FilterModal = FilterKey | null;
 
 type FilterProps = {
   filterListItems: FilterListItems;
+  selectedFilters: SelectedFilters;
+  onItemSelect: (key: FilterKey, value: string) => void;
+  isDisabled: boolean;
 };
 
-export function Filter({ filterListItems }: FilterProps) {
+export function Filter({
+  filterListItems,
+  selectedFilters,
+  onItemSelect,
+  isDisabled,
+}: FilterProps) {
   const [activeFilter, setActiveFilter] = useState<FilterModal>(null);
   const handleFilterButtonClick = (newFilter: FilterKey) => {
+    if (isDisabled) return; // если фильтры отключены, не реагируем на клики
     setActiveFilter((prev) => (prev === newFilter ? null : newFilter));
-  };
+  }; // переключение фильтра по клику на кнопку, если кликнули на уже открытый фильтр - закрываем его
 
-  const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({
-    genre: [],
-    author: [],
-    year: 'По умолчанию',
-  });
-
-  const onItemSelect = (key: FilterKey, value: string) => {
-    const filterType = filterConfig[key];
-    if (filterType === 'single') {
-      setSelectedFilters((prev) => ({
-        ...prev,
-        [key]: value,
-      }));
-    } else if (filterType === 'multiple') {
-      setSelectedFilters((prev) => {
-        const currentValues = prev[key] as string[];
-        if (currentValues.includes(value)) {
-          return {
-            ...prev,
-            [key]: currentValues.filter((v) => v !== value),
-          };
-        } else {
-          return {
-            ...prev,
-            [key]: [...currentValues, value],
-          };
-        }
-      });
-    }
-  };
   //TODO сделать закрытие фильтра по клику вне области фильтра
   //TODO добавить map для отрисовки кнопок фильтров
 
@@ -64,12 +42,17 @@ export function Filter({ filterListItems }: FilterProps) {
       >
         исполнителю
         {activeFilter === 'author' && (
-          <FilterItem
-            filterKey="author"
-            list={filterListItems}
-            selectedFilters={selectedFilters}
-            onItemSelect={onItemSelect}
-          />
+          <>
+            <FilterItem
+              filterKey="author"
+              list={filterListItems}
+              selectedFilters={selectedFilters}
+              onItemSelect={onItemSelect}
+            />
+            <div className={styles.filter__buttonCounter}>
+              {selectedFilters.author?.length || 0}
+            </div>
+          </>
         )}
       </div>
       <div
@@ -92,14 +75,24 @@ export function Filter({ filterListItems }: FilterProps) {
       >
         жанру
         {activeFilter === 'genre' && (
-          <FilterItem
-            filterKey="genre"
-            list={filterListItems}
-            selectedFilters={selectedFilters}
-            onItemSelect={onItemSelect}
-          />
+          <>
+            <FilterItem
+              filterKey="genre"
+              list={filterListItems}
+              selectedFilters={selectedFilters}
+              onItemSelect={onItemSelect}
+            />
+            <div className={styles.filter__buttonCounter}>
+              {selectedFilters.genre?.length || 0}
+            </div>
+          </>
         )}
       </div>
+      {isDisabled && (
+        <div className={styles.filter__disabled}>
+          Фильтры отключены на странице подборок
+        </div>
+      )}
     </div>
   );
 }

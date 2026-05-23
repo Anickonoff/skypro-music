@@ -64,6 +64,11 @@ export default function Nav() {
               </li>
             )}
           </ul>
+          <img
+            className={styles.menu__image}
+            src="/img/icon/darktheme.svg"
+            alt="Смена темы"
+          />
         </div>
       )}
     </nav>

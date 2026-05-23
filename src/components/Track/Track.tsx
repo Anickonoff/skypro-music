@@ -89,14 +89,13 @@ export function Track({ track, playlist }: TrackProps) {
         <div className={styles.track__time}>
           <svg
             className={classNames(styles.track__timeSvg, {
+              [styles.track__timeSvgLiked]: isLike,
               [styles.track__timeSvgLoading]: isLiking,
               [styles.track__timeSvgUnauthorized]: isDeniedClick,
             })}
             onClick={onClickLike}
           >
-            <use
-              xlinkHref={`/img/icon/sprite.svg#${isLike ? 'icon-dislike' : 'icon-like'}`}
-            ></use>
+            <use xlinkHref="/img/icon/sprite.svg#icon-like"></use>
           </svg>
           {authStatus === 'unauthorized' && (
             <div className={styles.track__tooltip}>

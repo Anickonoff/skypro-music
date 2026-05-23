@@ -2,7 +2,7 @@ import { initializeAuth } from '@/store/features/authSlice';
 import { useAppDispatch } from '@/store/store';
 import { useEffect } from 'react';
 
-export const useInitAuth = () => {
+export const useInitAuth = (): void => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
