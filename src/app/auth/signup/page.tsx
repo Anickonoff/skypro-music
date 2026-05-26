@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
@@ -48,6 +49,9 @@ export default function SignUp() {
         localStorage.setItem('user', JSON.stringify(response.result.username));
       })
       .then(() => {
+        toast.success(
+          'Регистрация прошла успешно! Пожалуйста, войдите в систему.',
+        );
         router.push('/auth/signin');
       })
       .catch((error) => {

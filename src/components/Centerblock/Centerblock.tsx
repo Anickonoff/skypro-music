@@ -19,6 +19,7 @@ import { AxiosError } from 'axios';
 import { useAppSelector } from '@/store/store';
 import { filterConfig } from '@/sharedFilters/config';
 import { getFilteredPlaylist } from '@/utils/playlistFilter';
+import { toast } from 'react-toastify';
 
 export default function Centerblock() {
   const { allTracks, fetchError, fetching, favoriteTracks } = useAppSelector(
@@ -147,6 +148,8 @@ export default function Centerblock() {
       return <p>Ошибка загрузки выбранного плейлиста: {selectionError}</p>;
     } else if (fetching || isSelectionLoading) {
       return <p>Загрузка...</p>;
+    } else if (!filteredPlaylist.length) {
+      return <p>По заданным фильтам ничего не найдено</p>;
     } else {
       return filteredPlaylist.map((item) => (
         <Track key={item._id} track={item} playlist={filteredPlaylist} />
