@@ -44,11 +44,9 @@ export default function FetchingTracks() {
   useEffect(() => {
     if (favoriteTracks.length) {
       dispatch(setFavoriteTracks(favoriteTracks));
-      // dispatch(setFetching(false));
       return;
     } else {
       if (accessToken) {
-        // dispatch(setFetching(true));
         withReauth(
           (newToken) => getFavoriteTracks(newToken || accessToken),
           refreshToken,
@@ -66,7 +64,6 @@ export default function FetchingTracks() {
               }
             }
           });
-        // .finally(() => dispatch(setFetching(false)));
       }
     }
   }, [accessToken]);

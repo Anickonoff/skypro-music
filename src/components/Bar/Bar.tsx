@@ -31,17 +31,6 @@ export default function Bar() {
   const isUnauthorized = authStatus === 'unauthorized';
   const [isDeniedClick, setIsDeniedClick] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   if (!audioRef.current) {
-  //     return;
-  //   }
-  //   if (isPlaying) {
-  //     audioRef.current.play();
-  //   } else {
-  //     audioRef.current.pause();
-  //   }
-  // }, [currentTrack]);
-
   if (!currentTrack) {
     return <></>;
   }
