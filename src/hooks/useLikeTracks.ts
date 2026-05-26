@@ -2,6 +2,7 @@ import { addLike, removeLike } from '@/services/tracks/tracksApi';
 import { TrackType } from '@/sharedTypes/sharedTypes';
 import { addLikedTracks, removeLikedTracks } from '@/store/features/trackSlice';
 import { useAppDispatch, useAppSelector } from '@/store/store';
+import { handleAxiosError } from '@/utils/handleAxiosError';
 import { withReauth } from '@/utils/withReauth';
 import { AxiosError } from 'axios';
 import { useEffect, useRef, useState } from 'react';
@@ -47,15 +48,7 @@ export const useLikeTrack = (track: TrackType | null): returnTypeHook => {
           dispatch(actionSlice(track));
         })
         .catch((error) => {
-          if (error instanceof AxiosError) {
-            if (error.response) {
-              setErrorMsg(error.response.data.message);
-            } else if (error.request) {
-              setErrorMsg('Произошла ошибка. Попробуйте позже');
-            } else {
-              setErrorMsg('Неизвестная ошибка');
-            }
-          }
+          handleAxiosError(error, (msg) => setErrorMsg(msg));
         })
         .finally(() => {
           setIsLiking(false);

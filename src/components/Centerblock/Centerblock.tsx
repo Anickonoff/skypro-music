@@ -20,6 +20,7 @@ import { useAppSelector } from '@/store/store';
 import { filterConfig } from '@/sharedFilters/config';
 import { getFilteredPlaylist } from '@/utils/playlistFilter';
 import { toast } from 'react-toastify';
+import { handleAxiosError } from '@/utils/handleAxiosError';
 
 export default function Centerblock() {
   const { allTracks, fetchError, fetching, favoriteTracks } = useAppSelector(
@@ -66,15 +67,7 @@ export default function Centerblock() {
             setSelectionTracks(selectionTracks);
           })
           .catch((error) => {
-            if (error instanceof AxiosError) {
-              if (error.response) {
-                setSelectionError(error.response.data);
-              } else if (error.request) {
-                setSelectionError('Что-то с интернетом');
-              } else {
-                setSelectionError('Неизвестная ошибка');
-              }
-            }
+            handleAxiosError(error, (msg) => setSelectionError(msg));
           })
           .finally(() => setIsSelectionLoading(false));
       }

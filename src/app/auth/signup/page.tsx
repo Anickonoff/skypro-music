@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { handleAxiosError } from '@/utils/handleAxiosError';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
@@ -55,19 +56,7 @@ export default function SignUp() {
         router.push('/auth/signin');
       })
       .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setErrorMessage(error.response.data.message);
-          } else if (error.request) {
-            setErrorMessage(
-              'Нет ответа от сервера. Пожалуйста, попробуйте позже.',
-            );
-          } else {
-            setErrorMessage(
-              'Неизвестная ошибка, попробуйте, пожалуйста, позже.',
-            );
-          }
-        }
+        handleAxiosError(error, (msg) => setErrorMessage(msg));
       })
       .finally(() => {
         setIsLoading(false);

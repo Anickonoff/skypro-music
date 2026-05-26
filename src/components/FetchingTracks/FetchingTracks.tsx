@@ -8,6 +8,7 @@ import {
   setFetching,
 } from '@/store/features/trackSlice';
 import { useAppDispatch, useAppSelector } from '@/store/store';
+import { handleAxiosError } from '@/utils/handleAxiosError';
 import { withReauth } from '@/utils/withReauth';
 import { AxiosError } from 'axios';
 import { useEffect } from 'react';
@@ -27,15 +28,7 @@ export default function FetchingTracks() {
       getAllTracks()
         .then((tracks) => dispatch(setAllTracks(tracks)))
         .catch((error) => {
-          if (error instanceof AxiosError) {
-            if (error.response) {
-              dispatch(setFetchError(error.response.data));
-            } else if (error.request) {
-              dispatch(setFetchError('Что-то с интернетом'));
-            } else {
-              dispatch(setFetchError('Неизвестная ошибка'));
-            }
-          }
+          handleAxiosError(error, (msg) => dispatch(setFetchError(msg)));
         })
         .finally(() => dispatch(setFetching(false)));
     }
@@ -54,15 +47,7 @@ export default function FetchingTracks() {
         )
           .then((tracks) => dispatch(setFavoriteTracks(tracks)))
           .catch((error) => {
-            if (error instanceof AxiosError) {
-              if (error.response) {
-                dispatch(setFetchError(error.response.data));
-              } else if (error.request) {
-                dispatch(setFetchError('Что-то с интернетом'));
-              } else {
-                dispatch(setFetchError('Неизвестная ошибка'));
-              }
-            }
+            handleAxiosError(error, (msg) => dispatch(setFetchError(msg)));
           });
       }
     }

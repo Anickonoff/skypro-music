@@ -13,6 +13,7 @@ import {
   setRefreshToken,
   setUsername,
 } from '@/store/features/authSlice';
+import { handleAxiosError } from '@/utils/handleAxiosError';
 
 export default function Signin() {
   const dispatch = useAppDispatch();
@@ -51,19 +52,7 @@ export default function Signin() {
         router.push('/music/main');
       })
       .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setErrorMessage(error.response.data.message);
-          } else if (error.request) {
-            setErrorMessage(
-              'Нет ответа от сервера. Пожалуйста, попробуйте позже.',
-            );
-          } else {
-            setErrorMessage(
-              'Неизвестная ошибка, попробуйте, пожалуйста, позже.',
-            );
-          }
-        }
+        handleAxiosError(error, (msg) => setErrorMessage(msg));
       })
       .finally(() => {
         setIsLoading(false);
