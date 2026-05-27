@@ -1,0 +1,112 @@
+'use client';
+
+import { TrackType } from '@/sharedTypes/sharedTypes';
+import { formatTime } from '@/utils/helper';
+import styles from './track.module.css';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import {
+  setCurrentPlayList,
+  setCurrentTrack,
+} from '@/store/features/trackSlice';
+import classNames from 'classnames';
+import { useLikeTrack } from '@/hooks/useLikeTracks';
+import { selectAuthStatus } from '@/store/features/authSelectors';
+import { useState } from 'react';
+
+type TrackProps = {
+  track: TrackType;
+  playlist: TrackType[];
+};
+
+export function TrackContent({ track, playlist }: TrackProps) {
+  const dispatch = useAppDispatch();
+  const isPlaying = useAppSelector((state) => state.track.isPlaying);
+  const currentTrack = useAppSelector((state) => state.track.currentTrack);
+  const isActive = isPlaying && track._id === currentTrack?._id;
+  const authStatus = useAppSelector(selectAuthStatus);
+
+  const { toggleLike, isLike, isLiking } = useLikeTrack(track);
+  const isUnauthorized = authStatus === 'unauthorized';
+  const [isDeniedClick, setIsDeniedClick] = useState<boolean>(false);
+
+  const onClickTrack = () => {
+    dispatch(setCurrentTrack(track));
+    dispatch(setCurrentPlayList(playlist));
+  };
+
+  const onClickLike = (event: React.MouseEvent<SVGSVGElement>) => {
+    event.stopPropagation();
+    if (isUnauthorized) {
+      setIsDeniedClick(true);
+      setTimeout(() => {
+        setIsDeniedClick(false);
+      }, 500);
+    } else {
+      toggleLike();
+    }
+  };
+
+  return (
+    <div
+      key={track._id}
+      className={styles.playlist__item}
+      onClick={onClickTrack}
+    >
+      <div className={styles.playlist__track}>
+        <div className={styles.track__title}>
+          <div className={styles.track__titleImage}>
+            {track.logo?.data && track.logo.data.length > 0 ? (
+              <img src={track.logo.data[0]} alt="Track logo" />
+            ) : (
+              <svg
+                className={classNames(styles.track__titleSvg, {
+                  [styles.track__titleSvgActive]: isActive,
+                })}
+              >
+                <use
+                  xlinkHref={`/img/icon/sprite.svg#${track._id === currentTrack?._id ? 'icon-active' : 'icon-note'}`}
+                ></use>
+              </svg>
+            )}
+          </div>
+          <div>
+            <a className={styles.track__titleLink} href="">
+              {track.name}
+              <span className={styles.track__titleSpan}></span>
+            </a>
+          </div>
+        </div>
+        <div className={styles.track__author}>
+          <a className={styles.track__authorLink} href="">
+            {track.author}
+          </a>
+        </div>
+        <div className={styles.track__album}>
+          <a className={styles.track__albumLink} href="">
+            {track.album}
+          </a>
+        </div>
+        <div className={styles.track__time}>
+          <svg
+            className={classNames(styles.track__timeSvg, {
+              [styles.track__timeSvgLiked]: isLike,
+              [styles.track__timeSvgLoading]: isLiking,
+              [styles.track__timeSvgUnauthorized]: isDeniedClick,
+            })}
+            onClick={onClickLike}
+          >
+            <use xlinkHref="/img/icon/sprite.svg#icon-like"></use>
+          </svg>
+          {authStatus === 'unauthorized' && (
+            <div className={styles.track__tooltip}>
+              Войдите, чтобы добавить в избранное
+            </div>
+          )}
+          <span className={styles.track__timeText}>
+            {formatTime(track.duration_in_seconds)}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}

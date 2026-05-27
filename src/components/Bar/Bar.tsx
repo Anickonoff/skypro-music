@@ -14,6 +14,7 @@ import { getTimePanel } from '@/utils/helper';
 import ProgressBar from '../ProgressBar/ProgressBar';
 import { useLikeTrack } from '@/hooks/useLikeTracks';
 import { selectAuthStatus } from '@/store/features/authSelectors';
+import Skeleton from 'react-loading-skeleton';
 
 export default function Bar() {
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
@@ -157,13 +158,13 @@ export default function Bar() {
                     xlinkHref={`/img/icon/sprite.svg#${isPlaying ? 'icon-pause' : 'icon-play'}`}
                   ></use>
                 </svg>
-                {!isLoadedTrack ? (
+                {/* {!isLoadedTrack ? (
                   <div className={styles.player__loadingOverlay}>
                     <svg className={styles.player__btnLoading}>
                       <use xlinkHref="/img/icon/sprite.svg#icon-loading"></use>
                     </svg>
                   </div>
-                ) : null}
+                ) : null} */}
               </div>
               <div className={styles.player__btnNext} onClick={onNextTrack}>
                 <svg className={styles.player__btnNextSvg}>
@@ -202,19 +203,34 @@ export default function Bar() {
             <div className={styles.player__trackPlay}>
               <div className={styles.trackPlay__contain}>
                 <div className={styles.trackPlay__image}>
-                  <svg className={styles.trackPlay__svg}>
-                    <use xlinkHref="/img/icon/sprite.svg#icon-note"></use>
-                  </svg>
+                  {isLoadedTrack ? (
+                    <svg className={styles.trackPlay__svg}>
+                      <use xlinkHref="/img/icon/sprite.svg#icon-note"></use>
+                    </svg>
+                  ) : (
+                    <Skeleton
+                      containerClassName={styles.skeleton}
+                      style={{ height: '100%' }}
+                    />
+                  )}
                 </div>
                 <div className={styles.trackPlay__author}>
-                  <a className={styles.trackPlay__authorLink} href="">
-                    {currentTrack.name}
-                  </a>
+                  {isLoadedTrack ? (
+                    <a className={styles.trackPlay__authorLink} href="">
+                      {currentTrack.name}
+                    </a>
+                  ) : (
+                    <Skeleton />
+                  )}
                 </div>
                 <div className={styles.trackPlay__album}>
-                  <a className={styles.trackPlay__albumLink} href="">
-                    {currentTrack.author}
-                  </a>
+                  {isLoadedTrack ? (
+                    <a className={styles.trackPlay__albumLink} href="">
+                      {currentTrack.author}
+                    </a>
+                  ) : (
+                    <Skeleton />
+                  )}
                 </div>
               </div>
 
