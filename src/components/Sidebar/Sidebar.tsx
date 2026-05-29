@@ -9,7 +9,7 @@ import Skeleton from 'react-loading-skeleton';
 export default function Sidebar({
   showPlaylists = true,
 }: {
-  showPlaylists: boolean;
+  showPlaylists?: boolean;
 }) {
   const username = useAppSelector((state) => state.auth.username);
   const dispatch = useAppDispatch();

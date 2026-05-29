@@ -3,14 +3,13 @@
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import styles from './bar.module.css';
 import classNames from 'classnames';
-import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import {
   setIsPlaying,
   setNextTrack,
   setPrevTrack,
   setShuffle,
 } from '@/store/features/trackSlice';
-import { getTimePanel } from '@/utils/helper';
 import ProgressBar from '../ProgressBar/ProgressBar';
 import { useLikeTrack } from '@/hooks/useLikeTracks';
 import { selectAuthStatus } from '@/store/features/authSelectors';

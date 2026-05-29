@@ -4,7 +4,6 @@ import { addLikedTracks, removeLikedTracks } from '@/store/features/trackSlice';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { handleAxiosError } from '@/utils/handleAxiosError';
 import { withReauth } from '@/utils/withReauth';
-import { AxiosError } from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { Id, toast } from 'react-toastify';
 

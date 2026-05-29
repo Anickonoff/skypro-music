@@ -5,7 +5,6 @@ import styles from './page.module.css';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useState } from 'react';
-import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '@/store/store';
 import {

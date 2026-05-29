@@ -10,7 +10,6 @@ import {
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { handleAxiosError } from '@/utils/handleAxiosError';
 import { withReauth } from '@/utils/withReauth';
-import { AxiosError } from 'axios';
 import { useEffect } from 'react';
 
 export default function FetchingTracks() {

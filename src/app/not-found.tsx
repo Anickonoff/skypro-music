@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import styles from './not-found.module.css';
 import Nav from '@/components/Nav/Nav';
 import Sidebar from '@/components/Sidebar/Sidebar';
