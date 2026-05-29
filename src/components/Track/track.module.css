@@ -127,6 +127,7 @@
   fill: transparent;
   stroke: #696969;
   transform-origin: center;
+  cursor: pointer;
 }
 
 .track__timeSvgLiked {

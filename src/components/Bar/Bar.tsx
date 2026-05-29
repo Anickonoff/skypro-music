@@ -157,13 +157,6 @@ export default function Bar() {
                     xlinkHref={`/img/icon/sprite.svg#${isPlaying ? 'icon-pause' : 'icon-play'}`}
                   ></use>
                 </svg>
-                {/* {!isLoadedTrack ? (
-                  <div className={styles.player__loadingOverlay}>
-                    <svg className={styles.player__btnLoading}>
-                      <use xlinkHref="/img/icon/sprite.svg#icon-loading"></use>
-                    </svg>
-                  </div>
-                ) : null} */}
               </div>
               <div className={styles.player__btnNext} onClick={onNextTrack}>
                 <svg className={styles.player__btnNextSvg}>
@@ -242,20 +235,16 @@ export default function Bar() {
                   )}
                   onClick={onClickLike}
                 >
-                  {isLike ? (
-                    <svg className={styles.trackPlay__dislikeSvg}>
-                      <use xlinkHref="/img/icon/sprite.svg#icon-dislike"></use>
-                    </svg>
-                  ) : (
-                    <svg
-                      className={classNames(styles.trackPlay__likeSvg, {
-                        [styles.trackPlay__likeLoading]: isLiking,
-                        [styles.trackPlay__likeUnauthorized]: isDeniedClick,
-                      })}
-                    >
-                      <use xlinkHref="/img/icon/sprite.svg#icon-like"></use>
-                    </svg>
-                  )}
+                  <svg
+                    className={classNames(styles.trackPlay__likeSvg, {
+                      [styles.trackPlay__likeLoading]: isLiking,
+                      [styles.trackPlay__likeUnauthorized]: isDeniedClick,
+                      [styles.trackPlay__likeSvgLiked]: isLike,
+                    })}
+                  >
+                    <use xlinkHref="/img/icon/sprite.svg#icon-like"></use>
+                  </svg>
+
                   {authStatus === 'unauthorized' && (
                     <div className={styles.trackPlay__tooltip}>
                       Войдите, чтобы добавить в избранное

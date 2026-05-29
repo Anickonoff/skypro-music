@@ -281,6 +281,11 @@
   transform-origin: center;
 }
 
+.trackPlay__likeSvgLiked {
+  stroke: #b672ff;
+  fill: #b672ff;
+}
+
 .trackPlay__dislike {
   margin-left: 28.5px;
   margin-block: auto;

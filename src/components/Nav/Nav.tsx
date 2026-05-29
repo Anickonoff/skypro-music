@@ -6,11 +6,13 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { clearUserData } from '@/store/features/authSlice';
+import { useRouter } from 'next/navigation';
 
 export default function Nav() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const { accessToken } = useAppSelector((state) => state.auth);
+  const router = useRouter();
   const toggleMenu = (): void => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -28,6 +30,7 @@ export default function Nav() {
           className={styles.logo__image}
           src="/img/logo.png"
           alt={'logo'}
+          onClick={() => router.push('/music/main')}
         />
       </div>
       <div className={styles.nav__burger} onClick={toggleMenu}>
@@ -64,11 +67,6 @@ export default function Nav() {
               </li>
             )}
           </ul>
-          <img
-            className={styles.menu__image}
-            src="/img/icon/darktheme.svg"
-            alt="Смена темы"
-          />
         </div>
       )}
     </nav>
