@@ -3,17 +3,17 @@
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import styles from './bar.module.css';
 import classNames from 'classnames';
-import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import {
   setIsPlaying,
   setNextTrack,
   setPrevTrack,
   setShuffle,
 } from '@/store/features/trackSlice';
-import { getTimePanel } from '@/utils/helper';
 import ProgressBar from '../ProgressBar/ProgressBar';
 import { useLikeTrack } from '@/hooks/useLikeTracks';
 import { selectAuthStatus } from '@/store/features/authSelectors';
+import Skeleton from 'react-loading-skeleton';
 
 export default function Bar() {
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
@@ -30,17 +30,6 @@ export default function Bar() {
   const authStatus = useAppSelector(selectAuthStatus);
   const isUnauthorized = authStatus === 'unauthorized';
   const [isDeniedClick, setIsDeniedClick] = useState<boolean>(false);
-
-  // useEffect(() => {
-  //   if (!audioRef.current) {
-  //     return;
-  //   }
-  //   if (isPlaying) {
-  //     audioRef.current.play();
-  //   } else {
-  //     audioRef.current.pause();
-  //   }
-  // }, [currentTrack]);
 
   if (!currentTrack) {
     return <></>;
@@ -168,13 +157,6 @@ export default function Bar() {
                     xlinkHref={`/img/icon/sprite.svg#${isPlaying ? 'icon-pause' : 'icon-play'}`}
                   ></use>
                 </svg>
-                {!isLoadedTrack ? (
-                  <div className={styles.player__loadingOverlay}>
-                    <svg className={styles.player__btnLoading}>
-                      <use xlinkHref="/img/icon/sprite.svg#icon-loading"></use>
-                    </svg>
-                  </div>
-                ) : null}
               </div>
               <div className={styles.player__btnNext} onClick={onNextTrack}>
                 <svg className={styles.player__btnNextSvg}>
@@ -213,19 +195,34 @@ export default function Bar() {
             <div className={styles.player__trackPlay}>
               <div className={styles.trackPlay__contain}>
                 <div className={styles.trackPlay__image}>
-                  <svg className={styles.trackPlay__svg}>
-                    <use xlinkHref="/img/icon/sprite.svg#icon-note"></use>
-                  </svg>
+                  {isLoadedTrack ? (
+                    <svg className={styles.trackPlay__svg}>
+                      <use xlinkHref="/img/icon/sprite.svg#icon-note"></use>
+                    </svg>
+                  ) : (
+                    <Skeleton
+                      containerClassName={styles.skeleton}
+                      style={{ height: '100%' }}
+                    />
+                  )}
                 </div>
                 <div className={styles.trackPlay__author}>
-                  <a className={styles.trackPlay__authorLink} href="">
-                    {currentTrack.name}
-                  </a>
+                  {isLoadedTrack ? (
+                    <a className={styles.trackPlay__authorLink} href="">
+                      {currentTrack.name}
+                    </a>
+                  ) : (
+                    <Skeleton />
+                  )}
                 </div>
                 <div className={styles.trackPlay__album}>
-                  <a className={styles.trackPlay__albumLink} href="">
-                    {currentTrack.author}
-                  </a>
+                  {isLoadedTrack ? (
+                    <a className={styles.trackPlay__albumLink} href="">
+                      {currentTrack.author}
+                    </a>
+                  ) : (
+                    <Skeleton />
+                  )}
                 </div>
               </div>
 
@@ -238,20 +235,16 @@ export default function Bar() {
                   )}
                   onClick={onClickLike}
                 >
-                  {isLike ? (
-                    <svg className={styles.trackPlay__dislikeSvg}>
-                      <use xlinkHref="/img/icon/sprite.svg#icon-dislike"></use>
-                    </svg>
-                  ) : (
-                    <svg
-                      className={classNames(styles.trackPlay__likeSvg, {
-                        [styles.trackPlay__likeLoading]: isLiking,
-                        [styles.trackPlay__likeUnauthorized]: isDeniedClick,
-                      })}
-                    >
-                      <use xlinkHref="/img/icon/sprite.svg#icon-like"></use>
-                    </svg>
-                  )}
+                  <svg
+                    className={classNames(styles.trackPlay__likeSvg, {
+                      [styles.trackPlay__likeLoading]: isLiking,
+                      [styles.trackPlay__likeUnauthorized]: isDeniedClick,
+                      [styles.trackPlay__likeSvgLiked]: isLike,
+                    })}
+                  >
+                    <use xlinkHref="/img/icon/sprite.svg#icon-like"></use>
+                  </svg>
+
                   {authStatus === 'unauthorized' && (
                     <div className={styles.trackPlay__tooltip}>
                       Войдите, чтобы добавить в избранное

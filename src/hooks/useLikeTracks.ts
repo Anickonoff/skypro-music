@@ -2,9 +2,10 @@ import { addLike, removeLike } from '@/services/tracks/tracksApi';
 import { TrackType } from '@/sharedTypes/sharedTypes';
 import { addLikedTracks, removeLikedTracks } from '@/store/features/trackSlice';
 import { useAppDispatch, useAppSelector } from '@/store/store';
+import { handleAxiosError } from '@/utils/handleAxiosError';
 import { withReauth } from '@/utils/withReauth';
-import { AxiosError } from 'axios';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Id, toast } from 'react-toastify';
 
 type returnTypeHook = {
   isLiking: boolean;
@@ -22,15 +23,19 @@ export const useLikeTrack = (track: TrackType | null): returnTypeHook => {
   const [isLiking, setIsLiking] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const toastLike = useRef<Id | null>(null);
+
   const toggleLike = () => {
+    setIsLiking(true);
     if (!accessToken) {
-      return setErrorMsg('Нет авторизации');
+      return setErrorMsg(
+        'Для добавления в избранное необходимо авторизоваться',
+      );
     }
 
     const actionApi = isLike ? removeLike : addLike;
     const actionSlice = isLike ? removeLikedTracks : addLikedTracks;
 
-    setIsLiking(true);
     setErrorMsg(null);
     if (track) {
       withReauth(
@@ -42,21 +47,53 @@ export const useLikeTrack = (track: TrackType | null): returnTypeHook => {
           dispatch(actionSlice(track));
         })
         .catch((error) => {
-          if (error instanceof AxiosError) {
-            if (error.response) {
-              setErrorMsg(error.response.data.message);
-            } else if (error.request) {
-              setErrorMsg('Произошла ошибка. Попробуйте позже');
-            } else {
-              setErrorMsg('Неизвестная ошибка');
-            }
-          }
+          handleAxiosError(error, (msg) => setErrorMsg(msg));
         })
         .finally(() => {
           setIsLiking(false);
         });
     }
   };
+
+  useEffect(() => {
+    if (isLiking && !isLike) {
+      toastLike.current = toast.info('Добавление в избранное...', {
+        position: 'bottom-right',
+        autoClose: false,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        icon: false,
+      });
+    } else if (isLiking && isLike) {
+      toastLike.current = toast.info('Удаление из избранного...', {
+        position: 'bottom-right',
+        autoClose: false,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        icon: false,
+      });
+    } else if (errorMsg && toastLike.current) {
+      toast.update(toastLike.current, {
+        type: 'error',
+        render: errorMsg,
+        autoClose: 3000,
+        hideProgressBar: false,
+        icon: null,
+      });
+    } else if (!isLiking && !errorMsg && toastLike.current) {
+      toast.update(toastLike.current, {
+        type: 'success',
+        render: isLike ? 'Добавлено в избранное' : 'Удалено из избранного',
+        autoClose: 3000,
+        hideProgressBar: false,
+        icon: null,
+      });
+    }
+  }, [errorMsg, isLiking]);
 
   return {
     isLiking,

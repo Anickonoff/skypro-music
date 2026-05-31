@@ -11,14 +11,14 @@ import {
   FilterListItems,
   SelectedFilters,
 } from '@/sharedFilters/types';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SelectionTracksType, TrackType } from '@/sharedTypes/sharedTypes';
 import { getSelectionById } from '@/services/tracks/tracksApi';
 import { useParams, usePathname } from 'next/navigation';
-import { AxiosError } from 'axios';
 import { useAppSelector } from '@/store/store';
 import { filterConfig } from '@/sharedFilters/config';
 import { getFilteredPlaylist } from '@/utils/playlistFilter';
+import { handleAxiosError } from '@/utils/handleAxiosError';
 
 export default function Centerblock() {
   const { allTracks, fetchError, fetching, favoriteTracks } = useAppSelector(
@@ -65,15 +65,7 @@ export default function Centerblock() {
             setSelectionTracks(selectionTracks);
           })
           .catch((error) => {
-            if (error instanceof AxiosError) {
-              if (error.response) {
-                setSelectionError(error.response.data);
-              } else if (error.request) {
-                setSelectionError('Что-то с интернетом');
-              } else {
-                setSelectionError('Неизвестная ошибка');
-              }
-            }
+            handleAxiosError(error, (msg) => setSelectionError(msg));
           })
           .finally(() => setIsSelectionLoading(false));
       }
@@ -146,7 +138,11 @@ export default function Centerblock() {
     } else if (selectionError) {
       return <p>Ошибка загрузки выбранного плейлиста: {selectionError}</p>;
     } else if (fetching || isSelectionLoading) {
-      return <p>Загрузка...</p>;
+      return new Array(10)
+        .fill(0)
+        .map((_, i) => <Track key={i} isLoading={true} />);
+    } else if (!filteredPlaylist.length) {
+      return <p>По заданным фильтам ничего не найдено</p>;
     } else {
       return filteredPlaylist.map((item) => (
         <Track key={item._id} track={item} playlist={filteredPlaylist} />

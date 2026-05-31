@@ -3,10 +3,9 @@
   border-radius: 16px;
   background-color: #313131;
   position: absolute;
-  top: 100%;
+  top: calc(100% + 10px);
   left: 0;
 }
-
 
 .filter__list {
   color: white;
@@ -36,10 +35,9 @@
   cursor: pointer;
   font-size: 20px;
   line-height: 24px;
-  
 }
 
 .filter__item_active {
-  color: #B672FF;
+  color: #b672ff;
   text-decoration: underline;
 }

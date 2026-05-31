@@ -5,8 +5,9 @@ import styles from './page.module.css';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useState } from 'react';
-import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
+import { handleAxiosError } from '@/utils/handleAxiosError';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
@@ -48,22 +49,13 @@ export default function SignUp() {
         localStorage.setItem('user', JSON.stringify(response.result.username));
       })
       .then(() => {
+        toast.success(
+          'Регистрация прошла успешно! Пожалуйста, войдите в систему.',
+        );
         router.push('/auth/signin');
       })
       .catch((error) => {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            setErrorMessage(error.response.data.message);
-          } else if (error.request) {
-            setErrorMessage(
-              'Нет ответа от сервера. Пожалуйста, попробуйте позже.',
-            );
-          } else {
-            setErrorMessage(
-              'Неизвестная ошибка, попробуйте, пожалуйста, позже.',
-            );
-          }
-        }
+        handleAxiosError(error, (msg) => setErrorMessage(msg));
       })
       .finally(() => {
         setIsLoading(false);

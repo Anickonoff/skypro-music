@@ -37,7 +37,7 @@
 .track__titleImage {
   width: 51px;
   height: 51px;
-  padding: 16px;
+  /* padding: 16px; */
   background: #313131;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -127,6 +127,7 @@
   fill: transparent;
   stroke: #696969;
   transform-origin: center;
+  cursor: pointer;
 }
 
 .track__timeSvgLiked {
@@ -218,4 +219,9 @@
 
 .track__timeSvg:hover + .track__tooltip {
   display: block;
+}
+
+.skeleton {
+  flex-grow: 1;
+  height: 100%;
 }
